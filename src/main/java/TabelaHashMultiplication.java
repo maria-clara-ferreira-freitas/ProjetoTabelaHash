@@ -10,6 +10,17 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
 
     public static final double FATOR_DE_CARGA_DEFAULT = 0.85;
 
+    public TabelaHashMultiplication(){
+        this(CAPACIDADE_DEFAULT, FATOR_DE_CARGA_DEFAULT);
+    }
+
+    public TabelaHashMultiplication(int capacidade, double fatorDeCarga) {
+        this.tabela = new Integer[capacidade];
+        this.fatorDeCarga = fatorDeCarga;
+        this.tamanho = 0;
+        this.colisoes = 0;
+    }
+
     @Override
     public int hash(Integer chave) {
         return chave % this.tabela.length;
