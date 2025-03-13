@@ -1,13 +1,15 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class TabelaHashMultiplication implements TabelaHashProjeto{
 
     private Integer[] tabela;
     private int tamanho;
     private int colisoes;
-    private static final Integer DELETED = Integer.MIN_VALUE;
     private double fatorDeCarga;
 
+    private static final Integer DELETED = Integer.MIN_VALUE;
     public static final int CAPACIDADE_DEFAULT = 3000;
-
     public static final double FATOR_DE_CARGA_DEFAULT = 0.85;
 
     public TabelaHashMultiplication(){
@@ -30,6 +32,10 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
 
     @Override
     public void add(Integer chave) {
+        if((this.tamanho / this.tabela.length) >= fatorDeCarga){
+            resize();
+
+        }
         int sondagem = 0;
         int hash;
 
@@ -57,8 +63,28 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
 
     @Override
     public void resize() {
+        int novoTamanho = this.tamanho * 2;
+        Integer[] novaTabela = new Integer[novoTamanho];
 
+        for (int i = 0; i < this.tabela.length; i++) {
+            if (this.tabela[i] != null && this.tabela[i] != DELETED) {
+                int sondagem = 0;
+                int rehash = hash(this.tabela[i]) % novoTamanho;
+
+                // Encontra a posição disponível na nova tabela
+                while (novaTabela[rehash] != null) {
+                    sondagem++;
+                    rehash = (rehash + sondagem) % novoTamanho;
+                }
+
+                novaTabela[rehash] = this.tabela[i];
+            }
+        }
+
+        // Atualiza a tabela com a nova versão
+        this.tabela = novaTabela;
     }
+
 
     @Override
     public boolean contains(Integer chave) {
