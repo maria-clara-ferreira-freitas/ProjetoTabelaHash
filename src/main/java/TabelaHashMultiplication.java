@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class TabelaHashMultiplication implements TabelaHashProjeto{
 
     private Integer[] tabela;
@@ -32,12 +29,13 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
 
     @Override
     public void add(Integer chave) {
-        if((this.tamanho / this.tabela.length) >= fatorDeCarga){
+        if(((double) this.tamanho / this.tabela.length) >= fatorDeCarga){
             resize();
-
         }
+
         int sondagem = 0;
         int hash;
+        boolean houveColisao = false;
 
         while (sondagem < tabela.length) {
 
@@ -46,11 +44,12 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
             if (tabela[hash] == null || tabela[hash] == chave || tabela[hash] == DELETED) {
                 tabela[hash] = chave;
                 this.tamanho++;
+                if (houveColisao) colisoes++;
                 return;
             }
 
-            sondagem += 1;
-            colisoes += 1;
+            if (sondagem == 0) houveColisao = true;
+            sondagem++;
 
         }
 
@@ -70,7 +69,7 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
         for (int i = 0; i < this.tabela.length; i++) {
             if (this.tabela[i] != null && this.tabela[i] != DELETED) {
                 int sondagem = 0;
-                int rehash = hash(this.tabela[i]) % novoTamanho;
+                int rehash = (int) (novoTamanho * ((this.tabela[i] * 0.6180339887) % 1));
 
                 // encontra a posição disponível na nova tabela
                 while (novaTabela[rehash] != null) {
