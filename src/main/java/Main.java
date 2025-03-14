@@ -2,7 +2,7 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
-        TabelaHashMultiplication hashTable = new TabelaHashMultiplication(3000, 0.85);
+        TabelaHashMultiplication hashTable = new TabelaHashMultiplication();
         String arquivo = "data/random_numbers3.txt";
 
         try {

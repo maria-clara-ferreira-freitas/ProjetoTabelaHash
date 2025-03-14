@@ -63,7 +63,8 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
 
     @Override
     public void resize() {
-        int novoTamanho = this.tamanho * 2;
+        this.tamanho = 0;
+        int novoTamanho = this.tabela.length * 2;
         Integer[] novaTabela = new Integer[novoTamanho];
 
         for (int i = 0; i < this.tabela.length; i++) {
@@ -71,7 +72,7 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
                 int sondagem = 0;
                 int rehash = hash(this.tabela[i]) % novoTamanho;
 
-                // Encontra a posição disponível na nova tabela
+                // encontra a posição disponível na nova tabela
                 while (novaTabela[rehash] != null) {
                     sondagem++;
                     rehash = (rehash + sondagem) % novoTamanho;
@@ -80,8 +81,6 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
                 novaTabela[rehash] = this.tabela[i];
             }
         }
-
-        // Atualiza a tabela com a nova versão
         this.tabela = novaTabela;
     }
 
