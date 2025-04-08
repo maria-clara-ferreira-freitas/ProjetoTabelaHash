@@ -57,7 +57,23 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
 
     @Override
     public Integer remove(Integer chave) {
-        return 0;
+        int sondagem = 0;
+        int hash;
+
+        while (sondagem < tabela.length) {
+
+            hash = (hash(chave) + sondagem) % tabela.length;
+
+            if (tabela[hash] != null && tabela[hash] == chave){
+                Integer removido = tabela[hash] = hash;
+                tabela[hash] = DELETED;
+                this.tamanho--;
+                return removido;
+            }
+
+            sondagem++;
+        }
+        return null;
     }
 
     @Override
