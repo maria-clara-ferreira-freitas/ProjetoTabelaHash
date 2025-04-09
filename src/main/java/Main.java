@@ -2,7 +2,8 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
-        TabelaHashMultiplication hashTable = new TabelaHashMultiplication();
+        TabelaHashProjeto hashTable = new TabelaHashMultiplication();
+
         String arquivo = "data/random_numbers3.txt";
 
         try {

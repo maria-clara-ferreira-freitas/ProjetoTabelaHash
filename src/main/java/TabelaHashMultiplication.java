@@ -55,7 +55,7 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
 
     }
 
-    @Override
+    //@Override
     public Integer remove(Integer chave) {
         int sondagem = 0;
         int hash;
@@ -100,7 +100,7 @@ public class TabelaHashMultiplication implements TabelaHashProjeto{
     }
 
 
-    @Override
+   // @Override
     public boolean contains(Integer chave) {
         int sondagem = 0;
         int hash;

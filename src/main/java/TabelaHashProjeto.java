@@ -3,11 +3,13 @@ public interface TabelaHashProjeto {
 
     public void add(Integer chave);
 
-    public Integer remove(Integer chave);
+    //public Integer remove(Integer chave);
 
     void resize();
 
-    public boolean contains(Integer chave);
+    //public boolean contains(Integer chave);
 
     public int size();
+
+    public int getColisoes();
 }
