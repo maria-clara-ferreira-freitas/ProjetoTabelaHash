@@ -3,7 +3,8 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) {
         TabelaHashProjeto hashTable = new TabelaHashMultiplication();
-
+        //int capacidadeInicial = TabelaHashDivision.getProximoPrimo(3000);
+    	//TabelaHashDivision hashTable = new TabelaHashDivision(capacidadeInicial);
         String arquivo = "data/random_numbers3.txt";
 
         try {
