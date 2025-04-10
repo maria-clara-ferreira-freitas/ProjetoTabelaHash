@@ -1,7 +1,5 @@
-package eda;
 import java.io.*;
 import java.util.*;
-
 
 public class TabelaHashMidSquare implements TabelaHashProjeto{
 	
@@ -10,14 +8,10 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
 	    private int numeroDeColisoes;
 	    private int count;
 	    private double fatorDeCarga;
-	    private static final int CAPACIDADE_DEFAULT = 100;
+	    private static final  double FATOR_DE_CARGA_DEFAULT = 0.85;;
 	    private BufferedWriter writer;
 	    
-	    public TabelaHashMidSquare() {
-	        this(CAPACIDADE_DEFAULT);
-	    }
-	    
-	    public HashTable(String arquivoSaida) {
+	    public TabelaHashMidSquare(String arquivoSaida) {
 	        this.tamanho = tamanho; // Número primo para minimizar colisões
 	        this.table = new ArrayList[tamanho];
 	        this.numeroDeColisoes = 0;
@@ -32,12 +26,12 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
 	        }
 	    }
 	    @Override
-	    public int hash(int chave) {
+	    public int hash(Integer chave) {
 	        return Math.abs((chave * 31) % this.tamanho); // Multiplicação por número primo melhora dispersão
 	    }
 	    
 	    @Override 
-	    public void add(int chave) {
+	    public void add(Integer chave) {
 	        if ((double) this.count / this.tamanho > this.fatorDeCarga) {
 	            resize();
 	        }
@@ -57,6 +51,11 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
 	            }
 	            this.count++;
 	        }
+	    }
+
+	    @Override
+	    public int size() {
+	        return this.tamanho;
 	    }
 	    @Override
 	    public void resize() {
@@ -151,4 +150,3 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
 	            return hashAjustado;
 	        }
 }
-
