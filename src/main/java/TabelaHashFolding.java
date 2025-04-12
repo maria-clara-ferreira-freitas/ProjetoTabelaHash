@@ -9,19 +9,9 @@ public class TabelaHashFolding implements TabelaHashProjeto {
 
     }
 
-    //@Override
-    public Integer remove(Integer chave) {
-        return 0;
-    }
-
     @Override
     public void resize() {
 
-    }
-
-    //@Override
-    public boolean contains(Integer chave) {
-        return false;
     }
 
     @Override
