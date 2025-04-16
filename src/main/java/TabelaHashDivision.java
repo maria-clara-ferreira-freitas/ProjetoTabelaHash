@@ -5,8 +5,10 @@ public class TabelaHashDivision implements TabelaHashProjeto {
     private List<LinkedList<Integer>> tabela;
     private int capacidade;
     private int quantidade;
-    private static final int CAPACIDADE_DEFAULT = 100;
     private int colisoes;
+    private static final int CAPACIDADE_DEFAULT = 3000;
+    private static final double FATOR_DE_CARGA_DEFAULT = 0.85;
+
 
     public TabelaHashDivision() {
         this(CAPACIDADE_DEFAULT);
@@ -45,19 +47,20 @@ public class TabelaHashDivision implements TabelaHashProjeto {
 
 
     public void add(Integer chave) {
+        if ((double) quantidade / capacidade > FATOR_DE_CARGA_DEFAULT) {
+            resize();
+        }
         int index = hash(chave);
         if (tabela.get(index) == null) {
             tabela.set(index, new LinkedList<>());  
         }
         LinkedList<Integer> listas = tabela.get(index);
         if (!listas.contains(chave)) {
-            listas.add(chave);  
-        } else {
-            listas.add(chave);  
-            colisoes++; 
-        }        
-        if (quantidade > capacidade * 0.85) {
-            resize();
+            if (!listas.isEmpty()){
+                colisoes++;
+            }
+            listas.add(chave);
+            quantidade++;
         }
     }
 
@@ -87,6 +90,6 @@ public class TabelaHashDivision implements TabelaHashProjeto {
     }
 
     public int getColisoes() {
-        return colisoes;
+        return this.colisoes;
     }
 }

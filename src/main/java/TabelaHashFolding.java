@@ -1,18 +1,20 @@
-import java.io.*;
 import java.util.*;
 
 public class TabelaHashFolding implements TabelaHashProjeto {
     private List<Integer> table;
     private int capacidade;
+    private int quantidade;
     private int colisoes;
+    private static final double FATOR_DE_CARGA_DEFAULT = 0.85;
 
-    public TabelaHashFolding(int capacidadeInicial) {
-        this.capacidade = capacidadeInicial;
-        this.table = new ArrayList<>(capacidadeInicial);
-        for (int i = 0; i < capacidadeInicial; i++) {
+    public TabelaHashFolding() {
+        this.capacidade = 3000;
+        this.table = new ArrayList<>(capacidade);
+        for (int i = 0; i < capacidade; i++) {
             table.add(null);
         }
         this.colisoes = 0;
+        this.quantidade = 0;
     }
 
     @Override
@@ -23,22 +25,27 @@ public class TabelaHashFolding implements TabelaHashProjeto {
         // Divide a chave em partes e soma os valores
         for (int i = 0; i < keyString.length(); i += 2) {
             int part = Integer.parseInt(keyString.substring(i, Math.min(i + 2, keyString.length())));
-            sum += part;
+            sum = (sum * 31 + part) % capacidade;
+
         }
 
-        return sum % capacidade;
+        return sum;
     }
 
     @Override
     public void add(Integer chave) {
+        if((double) quantidade / capacidade > FATOR_DE_CARGA_DEFAULT){
+            resize();
+        }
+
         int index = hash(chave);
 
-        if (table.get(index) != null) {
+        if (table.get(index) != null && !table.get(index).equals(chave)) {
             colisoes++; // Incrementa as colisões se o índice já estiver ocupado
         }
 
-        // Trata colisões (neste caso, substitui a chave antiga pela nova)
         table.set(index, chave);
+        quantidade++;
     }
 
     @Override
@@ -52,12 +59,11 @@ public class TabelaHashFolding implements TabelaHashProjeto {
             table.add(null);
         }
 
-        colisoes = 0; // Reinicia o contador de colisões
-
         // Re-hash das chaves antigas
         for (Integer chave : oldTable) {
             if (chave != null) {
-                add(chave);
+                int index = hash(chave);
+                table.set(index, chave);
             }
         }
     }
@@ -71,3 +77,4 @@ public class TabelaHashFolding implements TabelaHashProjeto {
     public int getColisoes() {
         return colisoes;
     }
+}

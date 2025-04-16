@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.*;
 
 public class TabelaHashMidSquare implements TabelaHashProjeto{
@@ -9,26 +8,22 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
     private int count;
     private double fatorDeCarga;
     private static final double FATOR_DE_CARGA_DEFAULT = 0.85;
-    private BufferedWriter writer;
 
-    public TabelaHashMidSquare(String arquivoSaida) {
-        this.tamanho = tamanho;
+    public TabelaHashMidSquare() {
+        this.tamanho = 3000;
         this.table = new ArrayList[tamanho];
+        for (int i = 0; i < tamanho; i++) {
+            table[i] = new ArrayList<>();
+        }
         this.numeroDeColisoes = 0;
         this.count = 0;
         this.fatorDeCarga = FATOR_DE_CARGA_DEFAULT;
-        try {
-            this.writer = new BufferedWriter(new FileWriter(arquivoSaida, true)); // true para append
-        } catch (IOException e) {
-            System.out.println("Erro ao abrir arquivo de saída: " + e.getMessage());
-        }        for (int i = 0; i < this.tamanho; i++) {
-            this.table[i] = new ArrayList<>();
-        }
+
     }
 
     @Override
     public int hash(Integer chave) {
-        return Math.abs((chave * 31) % this.tamanho);
+        return hashingMidSquare(chave, tamanho);
     }
 
     @Override
@@ -37,20 +32,12 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
             resize();
         }
         int hash = hash(chave);
-        if (!this.table[hash].contains(chave)) { // Evita inserir chave duplicada
-            boolean colisao = !this.table[hash].isEmpty();
-            this.table[hash].add(chave);
-            try {
-                if (colisao) {
-                    numeroDeColisoes++;
-                    writeToFile("Chave " + chave + " adicionada ao hash " + (hash % this.tamanho) + " - Colisão!");
-                } else {
-                    writeToFile("Chave " + chave + " adicionada ao hash " + (hash % this.tamanho));
-                }
-            } catch (IOException e) {
-                System.out.println("Erro ao escrever no arquivo: " + e.getMessage());
+        if (!this.table[hash].contains(chave)) {
+            if(!table[hash].isEmpty()){
+                numeroDeColisoes++;
             }
-            this.count++;
+            table[hash].add(chave);
+            count++;
         }
     }
 
@@ -62,11 +49,9 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
             novaTabela[i] = new ArrayList<>();
         }
         for (ArrayList<Integer> bucket : this.table) {
-            if (bucket != null) {
-                for (int chave : bucket) {
-                    int novoHash = Math.abs((chave * 31) % novoTamanho);
-                    novaTabela[novoHash].add(chave);
-                }
+            for (Integer chave : bucket) {
+                int novoHash = hashingMidSquare(chave, novoTamanho);
+                novaTabela[novoHash].add(chave);
             }
         }
         this.table = novaTabela;
@@ -97,20 +82,6 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
         return true;
     }
 
-    public void writeToFile(String message) throws IOException {
-        writer.write(message);
-        writer.newLine();
-    }
-    public void closeWriter() {
-        try {
-            if (writer != null) {
-                writer.close();
-            }
-        } catch (IOException e) {
-            System.out.println("Erro ao fechar o arquivo: " + e.getMessage());
-        }
-    }
-
     public static int contarDigitos(long chave) {
         int contagem = 0;
         while (chave != 0) {
@@ -119,6 +90,7 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
         }
         return contagem;
     }
+
     // Função para pegar o N-ésimo dígito de um número
     public static int pegarDigitoN(long numero, int pos) {
         int digito = 0;
@@ -127,6 +99,7 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
         digito = fração % 10; // Pegando o dígito da posição
         return digito;
     }
+
     // Função para pegar um intervalo de dígitos de um número
     public static int pegarIntervaloDeDigitos(long numero, int posInicial, int quantidade) {
         int numeroResultado = 0;
@@ -144,14 +117,17 @@ public class TabelaHashMidSquare implements TabelaHashProjeto{
         }
         return numeroResultado;
     }
-    // Função de hashing utilizando o método do quadrado do meio
-    public static int hashingMidSquare(int chave, int tamanho) {
-        // Método da média quadrada para gerar o hash
-        int hash = chave * chave; // Calculando o quadrado da chave
-        // Garantir que o valor do hash esteja dentro do intervalo da tabela
-        int hashAjustado = Math.abs(hash) % tamanho; // Ajustando para garantir que está dentro dos limites da tabela
-        // Verificando se o hash calculado é válido
-        System.out.println("Chave: " + chave + " -> Hash calculado: " + hash + " -> Hash ajustado: " + hashAjustado);
-        return hashAjustado;
+
+    private int hashingMidSquare(int chave, int tamanho) {
+        long squared = (long) chave * (long) chave;
+        int totalDigitos = contarDigitos(squared);
+
+        // Exemplo: queremos pegar 4 dígitos centrais
+        int quantidade = 4;
+        int posInicial = (totalDigitos - quantidade) / 2 + 1;
+
+        int digitosDoMeio = pegarIntervaloDeDigitos(squared, posInicial, quantidade);
+        return digitosDoMeio % tamanho;
     }
+
 }
