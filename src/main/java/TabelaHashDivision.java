@@ -50,11 +50,11 @@ public class TabelaHashDivision implements TabelaHashProjeto {
         if ((double) quantidade / capacidade > FATOR_DE_CARGA_DEFAULT) {
             resize();
         }
-        int index = hash(chave);
-        if (tabela.get(index) == null) {
-            tabela.set(index, new LinkedList<>());  
+        int indice = hash(chave);
+        if (tabela.get(indice) == null) {
+            tabela.set(indice, new LinkedList<>());  
         }
-        LinkedList<Integer> listas = tabela.get(index);
+        LinkedList<Integer> listas = tabela.get(indice);
         if (!listas.contains(chave)) {
             if (!listas.isEmpty()){
                 colisoes++;
@@ -65,20 +65,20 @@ public class TabelaHashDivision implements TabelaHashProjeto {
     }
 
     public void resize() {
-        int novoSize = getProximoPrimo(capacidade * 2);
+        int novoTamanho = getProximoPrimo(capacidade * 2);
         List<LinkedList<Integer>> novaTabela = new LinkedList<>();
-        for (int i = 0; i < novoSize; i++) {
+        for (int i = 0; i < novoTamanho; i++) {
             novaTabela.add(new LinkedList<>());
         }
         for (int i = 0; i < capacidade; i++) {
             LinkedList<Integer> lista = tabela.get(i);
             for (Integer chave : lista) {
-                int novoI = chave % novoSize;
+                int novoI = chave % novoTamanho;
                 novaTabela.get(novoI).add(chave);
             }
         }
         this.tabela = novaTabela;
-        this.capacidade = novoSize;
+        this.capacidade = novoTamanho;
     }
 
     public int size() {
